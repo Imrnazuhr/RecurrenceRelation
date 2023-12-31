@@ -1,4 +1,4 @@
-public static void statSecondDegree(double[] a, int c1, int c2,){
+public static void statSecondDegree(double[] a, double c1, double c2){
  if((a[2] < a[3]) && (a[3] < a[4])){
             System.out.println("Increasing: Yes");
         }
