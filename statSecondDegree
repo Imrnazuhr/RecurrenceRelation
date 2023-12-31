@@ -1,0 +1,30 @@
+public static void statSecondDegree(double[] a, int c1, int c2,){
+ if((a[2] < a[3]) && (a[3] < a[4])){
+            System.out.println("Increasing: Yes");
+        }
+        else{
+            System.out.println("Increasing: No");
+        }
+        
+        if((a[2] > a[3]) && a[3] > a[4]){
+            System.out.println("Decreasing: Yes");
+        }
+        else{
+            System.out.println("Decreasing: No");
+        }
+        
+        if(a[2] == a[3]){
+            System.out.println("Constant: Yes");
+        }
+        else{
+            System.out.println("Constant: No");
+        }
+        
+        if((a[2] > a[3] && a[3] < a[4]) || (a[2] < a[3] && a[3] > a[4])){
+            System.out.println("Up-down: Yes");
+        }
+        else{
+            System.out.println("Up-down: No");
+        }
+
+      }
