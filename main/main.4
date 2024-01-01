@@ -1,0 +1,191 @@
+package CodeSpace;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Scanner;
+public class RecurrenceRelation {
+    public static void main(String[] args) {
+        Scanner input = new Scanner(System.in);
+        final int maxLoop = 50;
+        int prompt;
+        
+        //asking which degree to run
+        System.out.println("Recurrence Relation for first degree or second? : ");
+        prompt = input.nextInt();
+        while (prompt != 1 && prompt != 2) {
+            System.out.println("Enter 1 or 2 only");
+            prompt = input.nextInt();
+        }
+        if(prompt == 1)
+            firstDegree(maxLoop);
+        else
+            secondDegree(maxLoop);
+    }
+    public static void firstDegree(int maxLoop) {
+        Scanner input = new Scanner(System.in);
+        double[] a = new double[maxLoop+1];
+        int n=0;
+        
+        //getting prompts
+        System.out.print("Enter a0 : ");
+        a[0] = input.nextDouble();
+        System.out.print("Enter c : ");
+        double c = input.nextDouble();
+        System.out.println();
+        
+        for(int i=0; i<=maxLoop; i++) {
+            //explicit formula
+            if(a[i] != a[0]) {
+                a[i] = Math.pow(c, i)*a[0];
+            }
+            System.out.printf("%d : %.2f\n", n, a[i]);
+            n++;
+        }
+        statFirstDegree(c, a[0]);
+        writeSequenceToCSV("sequence_first_degree.csv", a);
+    }
+    public static void secondDegree(int maxLoop) {
+        Scanner input = new Scanner(System.in);
+        double c1, c2, x1, x2, p=0, q=0;
+        double[] a = new double[maxLoop+1];
+        int n=2;
+        
+        //getting prompts
+        System.out.print("Enter for a0: ");
+        a[0] = input.nextDouble();
+        System.out.print("Enter for a1: ");
+        a[1] = input.nextDouble();
+        System.out.print("Enter for c1: ");
+        c1 = input.nextDouble();
+        System.out.print("Enter for c2: ");
+        c2 = input.nextDouble();
+        
+        //getting roots
+        x1 = (c1 + Math.sqrt(c1 * c1 - 4*1*(-c2)))/2;
+        x2 = (c1 - Math.sqrt(c1 * c1 - 4*1*(-c2)))/2;
+        
+        System.out.printf("0 : %.2f\n", a[0]);
+        System.out.printf("1 : %.2f\n", a[1]);
+        
+        //if 2 repeated roots
+        if(x1 == x2){
+            p = a[0];
+            q = (a[1] - (p * x1)) / x1;
+            
+            for(int j = 2; j < maxLoop+1; j++){
+                a[j] = (p * Math.pow(x1 , j)) + (q * j * Math.pow(x1 , j));
+                System.out.printf("%d : %.2f\n", n, a[j]);
+                n++;
+            }
+        }
+        
+        //if 2 distinct roots
+        else if(x1 != x2){
+            q = ((a[0] * x1) - a[1]) / (x1 - x2);
+            p = 2 - q;
+            
+            for(int i = 2; i < maxLoop+1; i++){
+                a[i] = (p * Math.pow(x1, i)) + (q * Math.pow(x2, i));
+                System.out.printf("%d : %.2f\n", n, a[i]);
+                n++;
+            }
+        }
+        statSecondDegree(a);
+        writeSequenceToCSV("sequence_second_degree.csv", a);
+    }
+    public static void statFirstDegree(double c, double a) {
+        System.out.println();
+        
+        //check increasing
+        if((c > 1 || c < -1) && a > 0 && c != 0)
+            System.out.println("Increasing : Yes");
+        else
+            System.out.println("Increasing : No");
+        
+        //check decreasing
+        if(c < 1 && c > -1 && a > 0 && c != 0)
+            System.out.println("Decreasing : Yes");
+        else
+            System.out.println("Decreasing : No");
+        
+        //check constant
+        if(c == 1 || c == 0)
+            System.out.println("Constant : Yes");
+        else
+            System.out.println("Constant : No");
+        
+        //check up-down
+        if(c < 0 && a != 0)
+            System.out.println("Up-down : Yes");
+        else
+            System.out.println("Up-down : No");
+        
+        //check diverging
+        if((c > 1 || c < -1) && a != 0)
+            System.out.println("Diverging : Yes");
+        else
+            System.out.println("Diverging : No");
+        
+        //check converging
+        if(c < 1 && c > -1 && a != 0 && c != 0)
+            System.out.println("Converging : Yes");
+        else
+            System.out.println("Converging : No");
+    }
+    public static void statSecondDegree(double[] a){
+        System.out.println();
+        
+        //check increasing
+        if(a[2] < a[4])
+            System.out.println("Increasing : Yes");
+        else
+            System.out.println("Increasing : No");
+        
+        //check decreasing
+        if(a[2] > a[4])
+            System.out.println("Decreasing : Yes");
+        else
+            System.out.println("Decreasing : No");
+        
+        //check constant
+        if(a[2] == a[3])
+            System.out.println("Constant : Yes");
+        else
+            System.out.println("Constant : No");
+        
+        //check up-down
+        if((a[2] > a[3] && a[3] < a[4]) || (a[2] < a[3] && a[3] > a[4]))
+            System.out.println("Up-down : Yes");
+        else
+            System.out.println("Up-down : No");
+        
+        //check diverging
+            if(a[2] < a[4])
+                System.out.println("Diverging : Yes");
+            else
+                System.out.println("Diverging : No");
+        
+        //check converging
+            if(a[2] > a[4])
+                System.out.println("Converging : Yes");
+            else
+                System.out.println("Converging : No");
+        }
+    // Write sequence to CSV file
+    public static void writeSequenceToCSV(String fileName, double[] sequence) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+            // Write header
+            writer.write("n,Value");
+            writer.newLine();
+
+            // Write data
+            for (int i = 0; i < sequence.length; i++) {
+                writer.write(String.format("%d,%.4f", i + 1, sequence[i]));
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            System.err.println("Error writing to file: " + e.getMessage());
+        }
+        System.out.println("\nData ha been saved in CVS file.");
+    }
+}
